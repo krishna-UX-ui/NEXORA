@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXORA — Digital Behavior Intelligence Engine | Login Portal</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/nexora-symbol.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <div class="login-card glass-card">
+      <div class="login-logo-wrap">
+        <img src="{{ url_for('static', filename='assets/nexora-logo.png') }}" alt="NEXORA Logo" class="login-logo-img">
+      </div>
+
+      <div class="login-mission-quote">
+        "Understand interaction. Protect privacy. Discover patterns."
+      </div>
+
+      <p class="login-concept-desc">
+        A privacy-preserving research platform that analyzes aggregate computer interaction patterns using Data Science and Machine Learning. Zero keystroke characters, passwords, screenshots, or personal files are ever captured.
+      </p>
+
+      <div class="login-status-bar">
+        <span class="splash-pill"><span class="pulse-dot"></span> LOCAL ENGINE ONLINE</span>
+        <span class="splash-pill">Data Storage: LOCAL</span>
+        <span class="splash-pill">AI Engine: LOCAL</span>
+        <span class="splash-pill">Privacy Mode: ACTIVE</span>
+      </div>
+
+      <form class="login-form" onsubmit="event.preventDefault(); window.location.href='/dashboard';">
+        <div class="form-group">
+          <label class="form-label">Research Workstation Terminal</label>
+          <input type="text" class="input-box" value="WS-NEXORA-01" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Investigator Access Role</label>
+          <input type="text" class="input-box" value="Lead Data Science Researcher (BCA)" required>
+        </div>
+
+        <div class="login-btn-row">
+          <button type="submit" class="btn btn-cyan login-submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+            ACCESS RESEARCH WORKSTATION
+          </button>
+        </div>
+      </form>
+
+      <div class="login-footer-links">
+        <a href="/privacy" class="login-link">Privacy Architecture</a>
+        <span class="dot-separator">•</span>
+        <a href="/monitor" class="login-link">Live Telemetry Monitor</a>
+        <span class="dot-separator">•</span>
+        <a href="/dashboard" class="login-link">Bypass to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

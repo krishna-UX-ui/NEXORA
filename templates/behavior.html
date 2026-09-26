@@ -1,0 +1,121 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="behavior-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Behavior Intelligence System</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Supervised Random Forest classification & unsupervised K-Means cognitive pattern segmentation</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge-tag badge-privacy">Random Forest & K-Means</span>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:20px;border-color:rgba(56,189,248,0.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:0.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">DETECTED PATTERN (LATEST OBSERVATION)</div>
+        <div id="detectedPatternHeading" style="font-size:1.8rem;font-weight:800;color:var(--cyan-primary);margin-top:4px;">DEEP WORK</div>
+        <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:4px;">
+          Model Confidence: <span id="detectedConfidenceVal" class="mono" style="color:#fff;font-weight:700;">0%</span>
+        </div>
+      </div>
+      <div id="detectedBadgeWrap">
+        <div id="detectedBadge" class="behavior-indicator-badge behavior-deep" style="font-size:1rem;padding:10px 22px;">
+          ● DEEP WORK
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border-card);">
+      <div style="font-size:0.82rem;font-weight:600;color:#fff;margin-bottom:8px;">Main Contributing Signals:</div>
+      <ul id="detectedSignalsList" style="padding-left:20px;font-size:0.82rem;color:var(--text-secondary);line-height:1.7;">
+        <li>High activity continuity</li>
+        <li>Low application switching</li>
+        <li>Low idle ratio</li>
+        <li>Sustained interaction</li>
+      </ul>
+      <div style="margin-top:12px;font-size:0.74rem;color:var(--text-muted);">
+        Disclaimer: Behavioral classes are computational heuristic groupings of mechanical input rates and window switches. They do not constitute psychological, cognitive, or medical diagnoses.
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Feature Importance Matrix</h4>
+          <span class="chart-desc">Relative Gini importance weights from Random Forest</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="featureImportanceChart"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Class Distribution Radar</h4>
+          <span class="chart-desc">Prototypical feature footprints across classes</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="behaviorRadarChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-top:20px;">
+    <div class="chart-card-header">
+      <div>
+        <h4 class="chart-title">Interactive Inference Sandbox</h4>
+        <span class="chart-desc">Simulate telemetry parameters to evaluate classifier response live</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:16px;margin-bottom:18px;">
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:4px;">Focus Index (0–100%)</label>
+        <input type="number" id="testFocus" class="input-box" style="width:100%;" value="88" min="0" max="100">
+      </div>
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:4px;">Continuity Index (0–100%)</label>
+        <input type="number" id="testContinuity" class="input-box" style="width:100%;" value="84" min="0" max="100">
+      </div>
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:4px;">Interaction Stability (0–100%)</label>
+        <input type="number" id="testStability" class="input-box" style="width:100%;" value="90" min="0" max="100">
+      </div>
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:4px;">Fragmentation Index (0–100%)</label>
+        <input type="number" id="testFrag" class="input-box" style="width:100%;" value="12" min="0" max="100">
+      </div>
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:4px;">App Switches</label>
+        <input type="number" id="testSwitches" class="input-box" style="width:100%;" value="4" min="0" max="100">
+      </div>
+      <div style="display:flex;align-items:flex-end;">
+        <button class="btn btn-cyan" style="width:100%;" onclick="runSandboxInference()">Test Classifier</button>
+      </div>
+    </div>
+    <div id="sandboxResultBox" style="display:none;padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--border-card);border-radius:var(--radius-sm);">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <span style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;">Predicted Classification:</span>
+          <div id="sandboxClass" style="font-size:1.2rem;font-weight:700;color:var(--cyan-primary);">DEEP WORK</div>
+        </div>
+        <div>
+          <span style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;">Calculated Confidence:</span>
+          <div id="sandboxConf" class="mono" style="font-size:1.2rem;font-weight:700;color:#fff;">89.2%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/behavior.js') }}"></script>
+{% endblock %}

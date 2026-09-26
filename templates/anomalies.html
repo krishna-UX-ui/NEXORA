@@ -1,0 +1,116 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="anomalies-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Anomaly Detection Engine</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Unsupervised multidimensional Isolation Forest baseline monitoring</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge-tag badge-privacy">Isolation Forest Model</span>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:20px;border-color:rgba(56,189,248,0.25);">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:0.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">ANOMALY STATUS (LATEST SESSION)</div>
+        <div id="anomalyStatusHeading" style="font-size:1.8rem;font-weight:800;color:var(--emerald);margin-top:4px;">NORMAL</div>
+        <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:4px;">
+          Calculated Anomaly Score: <span id="anomalyScoreVal" class="mono" style="color:#fff;font-weight:700;">0.142</span>
+          <span style="color:var(--text-muted);margin-left:8px;">(Threshold: 0.450)</span>
+        </div>
+      </div>
+      <div id="anomalyStatusBadge">
+        <span class="badge-tag" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:#34d399;font-size:0.9rem;padding:8px 18px;">
+          ● Baseline Match
+        </span>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border-card);">
+      <div style="font-size:0.82rem;font-weight:600;color:#fff;margin-bottom:12px;">Baseline Comparison Matrix:</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">
+        <div style="background:rgba(255,255,255,0.02);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border-card);">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span>Current Session Activity Density</span>
+            <span id="densityCurrentLabel" class="mono" style="color:var(--cyan-primary);">55.2 ev/min</span>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;">
+            <div id="densityCurrentBar" style="height:100%;width:55%;background:var(--cyan-primary);border-radius:6px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted);margin-top:8px;">
+            <span>Normal Baseline Range</span>
+            <span id="densityBaselineRange" class="mono">20–120 ev/min</span>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.02);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border-card);">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span>Current Task Fragmentation</span>
+            <span id="fragCurrentLabel" class="mono" style="color:var(--emerald);">18.4%</span>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;">
+            <div id="fragCurrentBar" style="height:100%;width:18%;background:var(--emerald);border-radius:6px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted);margin-top:8px;">
+            <span>Normal Baseline Range</span>
+            <span id="fragBaselineRange" class="mono">5–45%</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;font-size:0.76rem;color:var(--text-secondary);background:rgba(56,189,248,0.05);padding:12px;border-radius:var(--radius-sm);border:1px solid rgba(56,189,248,0.15);" id="anomalyNoticeText">
+        Interaction pattern aligns with baseline behavioral boundaries.
+      </div>
+      <div style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);">
+        Notice: Anomaly alerts denote computational divergence from the stored statistical baseline only. They do NOT imply security compromise, malicious behavior, depression, stress, cognitive impairment, or medical conditions.
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:20px;">
+    <div class="chart-card-header">
+      <div>
+        <h4 class="chart-title">Anomaly Distribution Trajectory</h4>
+        <span class="chart-desc">Historical anomaly scores plotted relative to decision boundary (0.45)</span>
+      </div>
+    </div>
+    <div class="chart-body">
+      <canvas id="anomalyTrajectoryChart"></canvas>
+    </div>
+  </div>
+
+  <div class="glass-card" style="padding:0;overflow:hidden;">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border-card);">
+      <h4 class="chart-title">Detected Unusual Intervals Archive</h4>
+      <span class="chart-desc">Sessions that exhibited statistical divergence from baseline interaction limits</span>
+    </div>
+    <div class="table-responsive-box">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Session ID</th>
+            <th>Observation Timestamp</th>
+            <th>Anomaly Score</th>
+            <th>Behavior Class</th>
+            <th>Primary Deviating Signals</th>
+            <th style="text-align:right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="anomalyRecordsBody">
+          <tr>
+            <td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Querying baseline anomalies...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/anomalies.js') }}"></script>
+{% endblock %}

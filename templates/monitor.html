@@ -1,0 +1,175 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="monitor-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Live Telemetry Monitor</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Real-time aggregate interaction capture & cognitive workload tracker</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button id="btnStartSession" class="btn btn-emerald" onclick="startLiveSession()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        START SESSION
+      </button>
+      <button id="btnPauseSession" class="btn btn-amber" onclick="togglePauseSession()" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        <span id="pauseBtnText">PAUSE SESSION</span>
+      </button>
+      <button id="btnEndSession" class="btn btn-rose" onclick="endLiveSession()" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+        END SESSION
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-grid-4" style="margin-bottom:18px;">
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">SESSION STATUS</span>
+        <span class="pulse-dot" id="liveStatusDot"></span>
+      </div>
+      <div class="stat-val" id="liveStatusText" style="color:var(--emerald);">INACTIVE</div>
+      <div class="stat-sub" id="liveSessionId">Awaiting session launch</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">ELAPSED TIME</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+      </div>
+      <div class="stat-val mono" id="liveTimerText" style="color:#fff;">00:00:00</div>
+      <div class="stat-sub">Session chronometer</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">ACTIVE RATIO</span>
+        <span style="font-size:0.75rem;color:var(--cyan-primary);font-weight:700;">FOCUS</span>
+      </div>
+      <div class="stat-val mono" id="liveActiveRatio" style="color:var(--cyan-primary);">0%</div>
+      <div class="stat-sub" id="liveActiveTimeSub">Active: 0s | Idle: 0s</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">ACTIVE APPLICATION</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">WINDOW</span>
+      </div>
+      <div class="stat-val" id="liveCurrentApp" style="font-size:1.15rem;color:#fff;">Workstation Desktop</div>
+      <div class="stat-sub">Foreground application context</div>
+    </div>
+  </div>
+
+  <div class="stats-grid-6">
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Mouse Clicks</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="7"></rect><line x1="12" y1="6" x2="12" y2="10"></line></svg></span>
+      </div>
+      <div class="stat-val mono" id="liveClicks">0</div>
+      <div class="stat-sub">Clicks recorded</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Keyboard Events</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line></svg></span>
+      </div>
+      <div class="stat-val mono" id="liveKeys">0</div>
+      <div class="stat-sub">Pulses (keys not logged)</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Scroll Events</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span>
+      </div>
+      <div class="stat-val mono" id="liveScrolls">0</div>
+      <div class="stat-sub">Wheel rotations</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Mouse Distance</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg></span>
+      </div>
+      <div class="stat-val mono" id="liveDistance">0</div>
+      <div class="stat-sub">Pixels traversed</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">App Switches</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path></svg></span>
+      </div>
+      <div class="stat-val mono" id="liveSwitches">0</div>
+      <div class="stat-sub">Focus alterations</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Idle Time</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg></span>
+      </div>
+      <div class="stat-val mono" id="liveIdleSeconds">0s</div>
+      <div class="stat-sub">Dormant duration</div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Real-Time Interaction Stream</h4>
+          <span class="chart-desc">Second-by-second pulse velocity (clicks, key events, scrolls)</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="liveStreamChart"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Live Cognitive Indices</h4>
+          <span class="chart-desc">Focus, Continuity, Stability, and Fragmentation gauges</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="liveGaugesChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-primary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <div>
+        <h5 style="font-size:0.88rem;color:#fff;">Simulate Workstation Telemetry</h5>
+        <p style="font-size:0.75rem;color:var(--text-secondary);">Generates realistic research pulses when testing without manual input on this tab</p>
+      </div>
+    </div>
+    <label class="switch-control">
+      <input type="checkbox" id="simToggle" onchange="toggleSimulation()">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div id="sessionEndSummaryCard" class="glass-card" style="display:none;margin-top:22px;border-color:var(--border-active);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <h4 style="color:#fff;font-size:1.1rem;display:flex;align-items:center;gap:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Session Concluded & Stored to SQLite
+      </h4>
+      <button class="btn btn-outline" style="padding:4px 10px;font-size:0.75rem;" onclick="document.getElementById('sessionEndSummaryCard').style.display='none'">Dismiss</button>
+    </div>
+    <div id="sessionEndSummaryDetails"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/monitor.js') }}"></script>
+{% endblock %}

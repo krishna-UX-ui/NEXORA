@@ -1,0 +1,179 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="analytics-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Statistical Analytics Laboratory</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Comprehensive quantitative modeling of digital behavior telemetry across all recorded intervals</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge-tag badge-privacy">SQLite Engine Connected</span>
+    </div>
+  </div>
+
+  <div class="stats-grid-6">
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Total Sessions</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+      </div>
+      <div class="stat-val mono" id="statTotalSessions">0</div>
+      <div class="stat-sub">Recorded dataset span</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Total Active Time</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+      </div>
+      <div class="stat-val mono" id="statTotalActiveHours" style="color:var(--emerald);">0 hrs</div>
+      <div class="stat-sub">Cumulative focus</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Avg Duration</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+      </div>
+      <div class="stat-val mono" id="statAvgDuration">0 min</div>
+      <div class="stat-sub">Mean session window</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Avg Focus Index</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg></span>
+      </div>
+      <div class="stat-val mono" id="statAvgFocus" style="color:var(--cyan-primary);">0%</div>
+      <div class="stat-sub">Mean attention index</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Avg Idle Ratio</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg></span>
+      </div>
+      <div class="stat-val mono" id="statAvgIdle" style="color:var(--amber);">0%</div>
+      <div class="stat-sub">Mean dormancy portion</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Avg App Switches</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path></svg></span>
+      </div>
+      <div class="stat-val mono" id="statAvgSwitches">0</div>
+      <div class="stat-sub">Mean context shifts</div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">1. Activity Over Time</h4>
+          <span class="chart-desc">Active seconds progression across consecutive sessions</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartActivityOverTime"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">2. Focus Index Over Time</h4>
+          <span class="chart-desc">Attention density ratio trajectory</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartFocusOverTime"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">3. Idle Time Over Time</h4>
+          <span class="chart-desc">Dormant intervals per session observation</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartIdleOverTime"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">4. Session Duration Distribution</h4>
+          <span class="chart-desc">Distribution histogram of session lengths (minutes)</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartDurationDist"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">5. Application Usage Distribution</h4>
+          <span class="chart-desc">Aggregated cumulative application focus</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartAppUsageRanks"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">6. Behavior Class Distribution</h4>
+          <span class="chart-desc">Clustering across the five defined behavioral states</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartBehaviorDistribution"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">7. Interaction Stability Trajectory</h4>
+          <span class="chart-desc">Equilibrium metric between keyboard and cursor modalities</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartStabilityTrend"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">8. Fragmentation Trend</h4>
+          <span class="chart-desc">Context switching disruption curve</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartFragmentationTrend"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

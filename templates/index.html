@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXORA — Digital Behavior Intelligence Engine</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.ico') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/nexora-symbol.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="startupSplashScreen" class="startup-splash-screen">
+    <div class="splash-inner">
+      <div class="splash-logo-wrap">
+        <img src="{{ url_for('static', filename='assets/nexora-logo.png') }}" alt="NEXORA — Digital Behavior Intelligence Engine" class="splash-logo-img">
+      </div>
+      <div class="splash-quote">
+        "Understand interaction. Protect privacy. Discover patterns."
+      </div>
+      <div class="splash-status-pills">
+        <span class="splash-pill"><span class="pulse-dot"></span> LOCAL ENGINE ONLINE</span>
+        <span class="splash-pill">Data Storage: LOCAL</span>
+        <span class="splash-pill">AI Engine: LOCAL</span>
+        <span class="splash-pill">Privacy Mode: ACTIVE</span>
+      </div>
+      <div class="splash-progress-track">
+        <div class="splash-progress-fill" id="splashProgressFill"></div>
+      </div>
+      <div class="splash-btn-wrap">
+        <button class="btn btn-cyan" onclick="dismissSplashScreen()">ENTER DASHBOARD</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <a href="/dashboard" class="sidebar-brand-link" title="NEXORA Dashboard">
+          <img src="{{ url_for('static', filename='assets/nexora-logo.png') }}" alt="NEXORA Logo" class="sidebar-brand-logo">
+        </a>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="/dashboard" class="nav-link {% if active_page == 'dashboard' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </a>
+        <a href="/monitor" class="nav-link {% if active_page == 'monitor' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Live Monitor
+        </a>
+        <a href="/sessions" class="nav-link {% if active_page == 'sessions' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Sessions
+        </a>
+        <a href="/analytics" class="nav-link {% if active_page == 'analytics' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Analytics
+        </a>
+        <a href="/behavior" class="nav-link {% if active_page == 'behavior' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><path d="M2 12h5l3 7 4-14 3 7h5"></path></svg>
+          Behavior
+        </a>
+        <a href="/anomalies" class="nav-link {% if active_page == 'anomalies' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          Anomalies
+        </a>
+        <a href="/explorer" class="nav-link {% if active_page == 'explorer' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          Data Explorer
+        </a>
+        <a href="/model" class="nav-link {% if active_page == 'model' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+          Model Center
+        </a>
+        <a href="/privacy" class="nav-link {% if active_page == 'privacy' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Privacy
+        </a>
+        <a href="/settings" class="nav-link {% if active_page == 'settings' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+        <a href="/login" class="nav-link {% if active_page == 'login' %}active{% endif %}">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+          Workstation Portal
+        </a>
+      </nav>
+
+      <div class="sidebar-status-box">
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          LOCAL ENGINE ONLINE
+        </div>
+        <div class="sys-meta-item">
+          <span>Data Storage</span>
+          <span>LOCAL</span>
+        </div>
+        <div class="sys-meta-item">
+          <span>AI Engine</span>
+          <span>LOCAL</span>
+        </div>
+        <div class="sys-meta-item">
+          <span>Privacy Mode</span>
+          <span>ACTIVE</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-viewport">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-toggle-btn" id="mobileMenuBtn" aria-label="Toggle Navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="topbar-brand-wrap">
+            <img src="{{ url_for('static', filename='assets/nexora-symbol.png') }}" alt="NEXORA Symbol" class="topbar-symbol-img">
+            <div class="page-title-wrap">
+              <h2>NEXORA</h2>
+              <p>Digital Behavior Intelligence Engine</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <span class="badge-tag badge-privacy">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Zero Keystroke Storage
+          </span>
+          <button class="btn-report" onclick="triggerSplashScreen()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Replay Intro
+          </button>
+          <button class="btn-report" onclick="openAcademicReportModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            Research Report
+          </button>
+        </div>
+      </header>
+
+      <div class="privacy-banner" id="privacyBanner">
+        <div class="privacy-banner-text">
+          <span class="privacy-shield-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </span>
+          <span><strong>Privacy First:</strong> NEXORA analyzes interaction patterns, not personal content. No typed characters, passwords, messages, screenshots, or clipboard contents are stored.</span>
+        </div>
+        <button class="banner-dismiss-btn" onclick="document.getElementById('privacyBanner').style.display='none'" aria-label="Dismiss banner">&times;</button>
+      </div>
+
+      <main class="content-container">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="academicReportModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-header-brand">
+          <img src="{{ url_for('static', filename='assets/nexora-logo.png') }}" alt="NEXORA Logo" class="modal-report-logo">
+          <div>
+            <h3>NEXORA — BCA & Data Science Project Report</h3>
+            <p class="modal-report-sub">Digital Behavior Intelligence Engine</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeAcademicReportModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Problem Statement</h4>
+        <p>Contemporary digital activity monitoring systems routinely infringe on end-user privacy by logging keystrokes, capturing screen feeds, and intercepting clipboard payloads. There is a pressing necessity for an ethical, privacy-preserving behavioral analytics engine that quantifies workflow rhythm and ergonomic stability without accessing or storing any private personal content.</p>
+
+        <h4>2. Objective</h4>
+        <p>To architect and deploy a full-stack digital behavior intelligence engine that translates aggregate interaction telemetry (mouse movement, scroll impulses, keystroke counts, process shifts) into interpretable cognitive workflow metrics (Focus Index, Continuity Index, Interaction Stability, Fragmentation Index) alongside unsupervised anomaly detection.</p>
+
+        <h4>3. Data Collection</h4>
+        <p>The collection daemon gathers only anonymous interaction tallies: mouse click count, mouse travel distance, keyboard event count, scroll count, active seconds, idle seconds, and application transition frequency. No typed characters, passwords, messages, window titles containing private content, or video frames are ever recorded.</p>
+
+        <h4>4. Data Cleaning</h4>
+        <p>Raw temporal timestamps are normalized against session durations. Outliers originating from suspended machine states are bounded, missing telemetry values are imputed with median session distributions, and non-numerical anomalies are filtered through schema validation.</p>
+
+        <h4>5. Feature Engineering</h4>
+        <p>Transparent deterministic mathematical formulations produce standardized indices:</p>
+        <ul>
+          <li><strong>Focus Index:</strong> (active_time / duration) * 100</li>
+          <li><strong>Idle Ratio:</strong> (idle_time / duration) * 100</li>
+          <li><strong>Switch Frequency:</strong> app_switches / (duration / 60)</li>
+          <li><strong>Activity Density:</strong> (mouse_clicks + keyboard_events + scroll_events) / active_minutes</li>
+          <li><strong>Continuity Index:</strong> Bounded inverse penalty function accounting for switch frequency and idle duration.</li>
+          <li><strong>Fragmentation Index:</strong> Linear compound metric of task switches and active-to-idle disruption ratios.</li>
+          <li><strong>Interaction Stability:</strong> Equilibrium assessment between input modalities (pointer vs keyboard cadence).</li>
+        </ul>
+
+        <h4>6. Exploratory Data Analysis & Visualization</h4>
+        <p>Multidimensional visualization through Chart.js charts temporal distribution patterns, application duration hierarchies, stability trajectories, and correlation heatmaps between task switching and focus retention.</p>
+
+        <h4>7. Machine Learning Architecture</h4>
+        <p>Supervised multi-class behavioral classification is powered by an ensemble Random Forest classifier paired with K-Means clustering for unsupervised cluster validation. Hyperparameters are selected to maximize class separability across DEEP WORK, NORMAL WORK, FRAGMENTED WORK, EXPLORATION, and IDLE classes.</p>
+
+        <h4>8. Anomaly Detection</h4>
+        <p>An Isolation Forest engine establishes a dynamic multidimensional behavioral baseline. Sessions presenting anomalous deviation in input density or fragmentation trigger an alert with explicit feature contribution analysis.</p>
+
+        <h4>9. Ethical Boundaries & Limitations</h4>
+        <p><strong>Strict Academic Notice:</strong> NEXORA analyzes digital interaction patterns exclusively. The system makes zero diagnostic claims regarding mental health, cognitive ability, psychological disorders, emotions, or medical conditions.</p>
+
+        <h4>10. Future Scope</h4>
+        <p>Integration with cross-platform native kernel events, federated local model updates, adaptive ergonomic break recommendations, and edge-device hardware acceleration.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="sessionDetailModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="{{ url_for('static', filename='assets/nexora-symbol.png') }}" alt="NEXORA" style="width:24px;height:24px;object-fit:contain;">
+          <h3 id="modalSessionTitle">Session Details</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeSessionDetailModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalSessionContent">
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    function dismissSplashScreen() {
+      const splash = document.getElementById('startupSplashScreen');
+      if (splash) {
+        splash.style.opacity = '0';
+        splash.style.pointerEvents = 'none';
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 400);
+      }
+      sessionStorage.setItem('nexora_splash_viewed', 'true');
+    }
+
+    function triggerSplashScreen() {
+      const splash = document.getElementById('startupSplashScreen');
+      if (splash) {
+        splash.style.display = 'flex';
+        splash.style.pointerEvents = 'auto';
+        setTimeout(() => {
+          splash.style.opacity = '1';
+        }, 10);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const viewed = sessionStorage.getItem('nexora_splash_viewed');
+      const splash = document.getElementById('startupSplashScreen');
+      if (splash) {
+        if (!viewed) {
+          splash.style.display = 'flex';
+          splash.style.opacity = '1';
+          const fill = document.getElementById('splashProgressFill');
+          if (fill) {
+            fill.style.width = '100%';
+          }
+          setTimeout(() => {
+            dismissSplashScreen();
+          }, 1800);
+        } else {
+          splash.style.display = 'none';
+        }
+      }
+    });
+
+    function openAcademicReportModal() {
+      document.getElementById('academicReportModal').style.display = 'flex';
+    }
+
+    function closeAcademicReportModal() {
+      document.getElementById('academicReportModal').style.display = 'none';
+    }
+
+    function openSessionDetailModal(sessionId) {
+      fetch('/api/sessions/' + encodeURIComponent(sessionId))
+        .then(r => r.json())
+        .then(res => {
+          if (!res.success) {
+            showToast(res.error || 'Failed to fetch session detail', 'rose');
+            return;
+          }
+          const s = res.data;
+          document.getElementById('modalSessionTitle').innerText = 'Session Inspection: ' + s.session_id;
+          let appsHtml = '';
+          if (s.applications && s.applications.length > 0) {
+            appsHtml = '<table class="data-table" style="margin-top:10px;"><thead><tr><th>Application</th><th>Duration</th><th>Percentage</th></tr></thead><tbody>' +
+              s.applications.map(a => `<tr><td>${a.app_name}</td><td>${a.duration_seconds}s</td><td>${a.percentage}%</td></tr>`).join('') +
+              '</tbody></table>';
+          } else {
+            appsHtml = '<p style="color:var(--text-muted);margin-top:8px;">No application breakdown recorded.</p>';
+          }
+
+          document.getElementById('modalSessionContent').innerHTML = `
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;">
+              <div class="stat-widget"><div class="stat-label">Behavior</div><div class="stat-val" style="font-size:1.1rem;color:var(--cyan-primary);">${s.behavior_class}</div></div>
+              <div class="stat-widget"><div class="stat-label">Duration</div><div class="stat-val" style="font-size:1.1rem;">${Math.round(s.duration / 60)} min</div></div>
+              <div class="stat-widget"><div class="stat-label">Focus Index</div><div class="stat-val" style="font-size:1.1rem;color:var(--emerald);">${s.focus_index}%</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;font-size:0.84rem;">
+              <div><strong>Start Time:</strong> ${s.start_time}</div>
+              <div><strong>End Time:</strong> ${s.end_time}</div>
+              <div><strong>Active Time:</strong> ${s.active_time}s</div>
+              <div><strong>Idle Time:</strong> ${s.idle_time}s</div>
+              <div><strong>Mouse Clicks:</strong> ${s.mouse_clicks}</div>
+              <div><strong>Keyboard Events:</strong> ${s.keyboard_events}</div>
+              <div><strong>Scroll Events:</strong> ${s.scroll_events}</div>
+              <div><strong>Mouse Distance:</strong> ${s.mouse_distance} px</div>
+              <div><strong>App Switches:</strong> ${s.app_switches}</div>
+              <div><strong>Activity Density:</strong> ${s.activity_density} ev/min</div>
+              <div><strong>Continuity Index:</strong> ${s.continuity_index}</div>
+              <div><strong>Interaction Stability:</strong> ${s.interaction_stability}</div>
+              <div><strong>Fragmentation Index:</strong> ${s.fragmentation_index}</div>
+              <div><strong>Type:</strong> ${s.is_demo ? '<span class="badge-tag badge-demo">Demo</span>' : '<span class="badge-tag badge-privacy">Real</span>'}</div>
+            </div>
+            <h4 style="margin-top:20px;">Associated Applications</h4>
+            ${appsHtml}
+          `;
+          document.getElementById('sessionDetailModal').style.display = 'flex';
+        })
+        .catch(err => {
+          showToast('Network error loading session', 'rose');
+        });
+    }
+
+    function closeSessionDetailModal() {
+      document.getElementById('sessionDetailModal').style.display = 'none';
+    }
+
+    function showToast(msg, type = 'cyan') {
+      const c = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = 'toast-msg';
+      t.innerHTML = `<span>${msg}</span>`;
+      c.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

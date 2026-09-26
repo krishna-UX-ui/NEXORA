@@ -1,0 +1,103 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="explorer-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Dataset Explorer</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Raw telemetry records, derived feature matrices, and export facility</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="btn btn-outline" id="btnToggleDensity" onclick="toggleDatasetDensity()">
+        <span id="densityBtnLabel">Show All Records</span>
+      </button>
+      <a href="/api/export/csv" class="btn btn-cyan">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Export CSV
+      </a>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:18px;padding:14px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;align-items:center;">
+      <div>
+        <label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;text-transform:uppercase;">Search Session</label>
+        <input type="text" id="explorerSearch" class="input-box" style="width:100%;" placeholder="Filter by ID, Behavior..." oninput="debounceExplorerSearch()">
+      </div>
+      <div>
+        <label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;text-transform:uppercase;">Behavior Class</label>
+        <select id="explorerBehavior" class="input-box" style="width:100%;" onchange="loadExplorerData()">
+          <option value="ALL">All Behaviors</option>
+          <option value="DEEP WORK">DEEP WORK</option>
+          <option value="NORMAL WORK">NORMAL WORK</option>
+          <option value="FRAGMENTED WORK">FRAGMENTED WORK</option>
+          <option value="EXPLORATION">EXPLORATION</option>
+          <option value="IDLE">IDLE</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;text-transform:uppercase;">Data Origin</label>
+        <select id="explorerOrigin" class="input-box" style="width:100%;" onchange="loadExplorerData()">
+          <option value="ALL">All Records</option>
+          <option value="0">Genuine User Only</option>
+          <option value="1">Synthetic Demo Only</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;text-transform:uppercase;">Sort Field</label>
+        <select id="explorerSort" class="input-box" style="width:100%;" onchange="loadExplorerData()">
+          <option value="created_at_DESC">Timestamp (Newest)</option>
+          <option value="created_at_ASC">Timestamp (Oldest)</option>
+          <option value="duration_DESC">Duration (Highest)</option>
+          <option value="focus_index_DESC">Focus Index (Highest)</option>
+          <option value="mouse_distance_DESC">Mouse Traversal (Highest)</option>
+          <option value="app_switches_DESC">App Switches (Highest)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="padding:0;overflow:hidden;">
+    <div class="table-responsive-box">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Session ID</th>
+            <th>Date</th>
+            <th>Duration</th>
+            <th>Active Time</th>
+            <th>Idle Time</th>
+            <th>Mouse Clicks</th>
+            <th>Key Events</th>
+            <th>Scroll Events</th>
+            <th>Mouse Dist</th>
+            <th>App Switches</th>
+            <th>Focus Index</th>
+            <th>Continuity</th>
+            <th>Stability</th>
+            <th>Fragmentation</th>
+            <th>Behavior</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="explorerTableBody">
+          <tr>
+            <td colspan="16" style="text-align:center;padding:36px;color:var(--text-muted);">Querying SQLite dataset...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid var(--border-card);display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);">
+      <span id="explorerInfo">Displaying dataset items</span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline" id="btnExpPrev" onclick="expPrev()" disabled style="padding:4px 10px;font-size:0.75rem;">Previous</button>
+        <button class="btn btn-outline" id="btnExpNext" onclick="expNext()" style="padding:4px 10px;font-size:0.75rem;">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/explorer.js') }}"></script>
+{% endblock %}

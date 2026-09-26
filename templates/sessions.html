@@ -1,0 +1,97 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="sessions-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Session Archive</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Historical interaction records, mathematical indices, and classification tags</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="/api/export/csv" class="btn btn-outline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Export CSV
+      </a>
+      <a href="/monitor" class="btn btn-cyan">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        New Session
+      </a>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:20px;padding:16px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:14px;align-items:center;">
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:6px;text-transform:uppercase;">Search Identifier</label>
+        <input type="text" id="sessionSearchInput" class="input-box" style="width:100%;" placeholder="e.g. DEMO-1001, DEEP WORK" oninput="debounceFilter()">
+      </div>
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:6px;text-transform:uppercase;">Behavior Filter</label>
+        <select id="sessionBehaviorSelect" class="input-box" style="width:100%;" onchange="fetchSessionsList()">
+          <option value="ALL">All Behaviors</option>
+          <option value="DEEP WORK">DEEP WORK</option>
+          <option value="NORMAL WORK">NORMAL WORK</option>
+          <option value="FRAGMENTED WORK">FRAGMENTED WORK</option>
+          <option value="EXPLORATION">EXPLORATION</option>
+          <option value="IDLE">IDLE</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:6px;text-transform:uppercase;">Dataset Scope</label>
+        <select id="sessionTypeSelect" class="input-box" style="width:100%;" onchange="fetchSessionsList()">
+          <option value="ALL">All Records</option>
+          <option value="0">Real User Only</option>
+          <option value="1">Demo Records Only</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.74rem;color:var(--text-muted);display:block;margin-bottom:6px;text-transform:uppercase;">Sort By</label>
+        <select id="sessionSortSelect" class="input-box" style="width:100%;" onchange="fetchSessionsList()">
+          <option value="created_at_DESC">Date (Newest First)</option>
+          <option value="created_at_ASC">Date (Oldest First)</option>
+          <option value="duration_DESC">Duration (Longest)</option>
+          <option value="focus_index_DESC">Focus Index (Highest)</option>
+          <option value="fragmentation_index_DESC">Fragmentation (Highest)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="padding:0;overflow:hidden;">
+    <div class="table-responsive-box">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Session ID</th>
+            <th>Recorded Date</th>
+            <th>Duration</th>
+            <th>Active Time</th>
+            <th>Idle Time</th>
+            <th>Focus Index</th>
+            <th>Continuity</th>
+            <th>Behavior Class</th>
+            <th>Origin</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsTableBody">
+          <tr>
+            <td colspan="10" style="text-align:center;padding:30px;color:var(--text-muted);">Querying SQLite datastore...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid var(--border-card);display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);">
+      <span id="sessionCountInfo">Showing 0 of 0 sessions</span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline" id="btnPrevPage" onclick="prevPage()" disabled style="padding:4px 10px;font-size:0.75rem;">Previous</button>
+        <button class="btn btn-outline" id="btnNextPage" onclick="nextPage()" style="padding:4px 10px;font-size:0.75rem;">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sessions.js') }}"></script>
+{% endblock %}

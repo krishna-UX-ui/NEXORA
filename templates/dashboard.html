@@ -1,0 +1,195 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="dashboard-wrap">
+  <div id="demoAlertBanner" style="display:none;margin-bottom:20px;padding:14px 20px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.35);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="badge-tag badge-demo">DEMO DATA</span>
+      <span style="font-size:0.84rem;color:#fde68a;">Synthetic sessions are preloaded for demonstration and initial machine learning training.</span>
+    </div>
+    <button class="btn btn-amber" style="padding:6px 12px;font-size:0.75rem;" onclick="clearDemoDataFromDashboard()">CLEAR DEMO DATA</button>
+  </div>
+
+  <div class="glass-card dashboard-hero-card">
+    <div class="hero-brand-left">
+      <div class="hero-logo-box">
+        <img src="{{ url_for('static', filename='assets/nexora-logo.png') }}" alt="NEXORA Logo" class="hero-logo-img">
+      </div>
+      <div class="hero-brand-info">
+        <div class="hero-quote-text">"Understand interaction. Protect privacy. Discover patterns."</div>
+        <div class="hero-system-status-pills">
+          <span class="splash-pill"><span class="pulse-dot"></span> LOCAL ENGINE ONLINE</span>
+          <span class="splash-pill">Data Storage: LOCAL</span>
+          <span class="splash-pill">AI Engine: LOCAL</span>
+          <span class="splash-pill">Privacy Mode: ACTIVE</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-brand-right">
+      <div class="hero-behavior-box">
+        <span class="hero-behavior-label">Current Cognitive State</span>
+        <div id="currentBehaviorBadge" class="behavior-indicator-badge behavior-deep">
+          <span>●</span>
+          <span id="currentBehaviorText">DEEP WORK</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="/monitor" class="btn btn-cyan">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+          Launch Monitor
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-grid-6">
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Session Duration</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+      </div>
+      <div class="stat-val" id="dashDuration">0m</div>
+      <div class="stat-sub">Recent session span</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Active Time</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></span>
+      </div>
+      <div class="stat-val" id="dashActiveTime" style="color:var(--emerald);">0m</div>
+      <div class="stat-sub">Productive engagement</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Idle Time</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg></span>
+      </div>
+      <div class="stat-val" id="dashIdleTime" style="color:var(--amber);">0m</div>
+      <div class="stat-sub">Telemetry quiescence</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Mouse Activity</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="7"></rect><line x1="12" y1="6" x2="12" y2="10"></line></svg></span>
+      </div>
+      <div class="stat-val" id="dashMouseClicks">0</div>
+      <div class="stat-sub" id="dashMouseDistance">0 px traveled</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">Keyboard Activity</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line></svg></span>
+      </div>
+      <div class="stat-val" id="dashKeyboardEvents">0</div>
+      <div class="stat-sub">Aggregate key pulses</div>
+    </div>
+
+    <div class="stat-widget">
+      <div class="stat-header">
+        <span class="stat-label">App Switches</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></span>
+      </div>
+      <div class="stat-val" id="dashAppSwitches">0</div>
+      <div class="stat-sub">Context shifts</div>
+    </div>
+  </div>
+
+  <div class="stats-grid-4">
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Focus Index</span>
+        <span style="font-size:0.75rem;color:var(--emerald);font-weight:700;">FORMULA: (ACTIVE/DUR)*100</span>
+      </div>
+      <div class="stat-val" id="dashFocusIndex" style="color:var(--cyan-primary);">0%</div>
+      <div class="stat-sub">Sustained attention ratio</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Continuity Index</span>
+        <span style="font-size:0.75rem;color:var(--cyan-primary);font-weight:700;">LOW DISRUPTIONS</span>
+      </div>
+      <div class="stat-val" id="dashContinuityIndex" style="color:var(--emerald);">0%</div>
+      <div class="stat-sub">Unbroken task flow factor</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Interaction Stability</span>
+        <span style="font-size:0.75rem;color:var(--indigo);font-weight:700;">INPUT HARMONY</span>
+      </div>
+      <div class="stat-val" id="dashStabilityIndex" style="color:var(--indigo);">0%</div>
+      <div class="stat-sub">Cadence consistency</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Fragmentation Index</span>
+        <span style="font-size:0.75rem;color:var(--rose);font-weight:700;">HIGH SWITCHES</span>
+      </div>
+      <div class="stat-val" id="dashFragmentationIndex" style="color:var(--rose);">0%</div>
+      <div class="stat-sub">Task interleaving rate</div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Activity Timeline</h4>
+          <span class="chart-desc">Active vs Idle telemetry seconds over recorded sessions</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="timelineChart"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Application Usage Hierarchy</h4>
+          <span class="chart-desc">Relative application duration distribution</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="appUsageChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Daily Activity Distribution</h4>
+          <span class="chart-desc">Aggregated focus and interaction densities</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="dailyActivityChart"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Behavior Class Distribution</h4>
+          <span class="chart-desc">Proportions across classified behavioral patterns</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <canvas id="behaviorDistChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

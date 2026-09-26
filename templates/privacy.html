@@ -1,0 +1,129 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="privacy-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Privacy & Cryptographic Boundary</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Zero-content architectural guarantee and local telemetry management</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge-tag badge-privacy">Local-First Storage</span>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:22px;border-color:rgba(16,185,129,0.3);">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+      <div style="width:42px;height:42px;border-radius:10px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:center;color:var(--emerald);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <div>
+        <h4 style="color:#fff;font-size:1.1rem;">NEXORA Privacy-First Architecture</h4>
+        <p style="font-size:0.8rem;color:var(--text-secondary);">Digital behavior analysis completely decoupled from personal identifiers or typed characters</p>
+      </div>
+    </div>
+    <p style="font-size:0.84rem;color:#cbd5e1;line-height:1.6;">
+      NEXORA is engineered under the principle of mathematical abstraction: human-computer interaction is modeled solely as a signal of discrete events, velocities, and focus durations. Keystroke buffers, text entries, screen buffers, and window title text are never inspected or retained.
+    </p>
+  </div>
+
+  <div class="charts-grid-2" style="margin-bottom:22px;">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <h4 class="chart-title" style="color:var(--emerald);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          DATA COLLECTED
+        </h4>
+      </div>
+      <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:12px;font-size:0.84rem;color:#e2e8f0;">
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--emerald);font-weight:700;">✓</span>
+          <span><strong>Interaction Counts:</strong> Numerical counts of mouse clicks, keystroke pulses, and wheel scrolls.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--emerald);font-weight:700;">✓</span>
+          <span><strong>Session Timing:</strong> Start time, end time, active duration, and idle dormancy seconds.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--emerald);font-weight:700;">✓</span>
+          <span><strong>Aggregate Activity Metrics:</strong> Mouse travel distance in Euclidean pixels.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--emerald);font-weight:700;">✓</span>
+          <span><strong>Application Usage Duration:</strong> Anonymized executable tags and time spent per application.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <h4 class="chart-title" style="color:var(--rose);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          NOT COLLECTED (NEVER STORED)
+        </h4>
+      </div>
+      <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:12px;font-size:0.84rem;color:#e2e8f0;">
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--rose);font-weight:700;">✕</span>
+          <span><strong>Passwords & Credentials:</strong> No keyboard strings or key-down character codes.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--rose);font-weight:700;">✕</span>
+          <span><strong>Typed Characters & Sequences:</strong> Zero log of letters, numbers, or keystroke orders.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--rose);font-weight:700;">✕</span>
+          <span><strong>Messages & Chat Transcripts:</strong> Zero access to communication clients or input fields.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--rose);font-weight:700;">✕</span>
+          <span><strong>Screenshots & Screen Captures:</strong> Zero framebuffer capture or visual frame buffers.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--rose);font-weight:700;">✕</span>
+          <span><strong>Clipboard & Personal Files:</strong> Zero access to copy-paste buffers, disk documents, or media.</span>
+        </li>
+        <li style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--rose);font-weight:700;">✕</span>
+          <span><strong>Browser URL Contents:</strong> Zero URL tracking or inspection of visited web page DOMs.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:22px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+      <div>
+        <h4 style="color:#fff;font-size:1rem;margin-bottom:4px;">Data Storage Architecture</h4>
+        <p style="font-size:0.8rem;color:var(--text-secondary);">
+          Telemetry is saved in an unshared local SQLite database file: <span class="mono" style="color:var(--cyan-primary);">nexora.db</span>. No external telemetry relays or remote telemetry clouds are invoked.
+        </p>
+      </div>
+      <span class="badge-tag badge-privacy">Local SQLite Datastore</span>
+    </div>
+  </div>
+
+  <div class="glass-card" style="border-color:rgba(244,63,94,0.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+      <div>
+        <h4 style="color:#fff;font-size:1rem;margin-bottom:4px;">Telemetry Sovereignty & Erasure</h4>
+        <p style="font-size:0.8rem;color:var(--text-secondary);">Export a portable CSV copy or instantly delete all sessions from your local machine</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a href="/api/export/csv" class="btn btn-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          EXPORT MY DATA
+        </a>
+        <button class="btn btn-rose" onclick="confirmDeleteAllData()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          DELETE ALL DATA
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/privacy.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="model-wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h3 style="font-size:1.4rem;font-weight:700;color:#fff;">Machine Learning Model Operations</h3>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">Supervised & unsupervised model lifecycle, cross-validation metrics, and parameter management</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="btn btn-emerald" id="btnTrainModel" onclick="trainModels()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        TRAIN / RETRAIN
+      </button>
+      <button class="btn btn-outline" id="btnResetModel" onclick="resetModels()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        RESET MODEL
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-grid-4">
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Dataset Size</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg></span>
+      </div>
+      <div class="stat-val mono" id="modelDatasetSize">0</div>
+      <div class="stat-sub">Available session instances</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Training Samples</span>
+        <span class="stat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></span>
+      </div>
+      <div class="stat-val mono" id="modelTrainingSamples" style="color:var(--cyan-primary);">0</div>
+      <div class="stat-sub">Cross-validation split</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Primary Classifier</span>
+        <span style="font-size:0.75rem;color:var(--emerald);font-weight:700;">SUPERVISED</span>
+      </div>
+      <div class="stat-val" id="modelPrimaryType" style="font-size:1.15rem;color:#fff;">Random Forest</div>
+      <div class="stat-sub" id="modelStatusBadge">MODEL READY</div>
+    </div>
+
+    <div class="glass-card">
+      <div class="stat-header">
+        <span class="stat-label">Unsupervised Suite</span>
+        <span style="font-size:0.75rem;color:var(--indigo);font-weight:700;">ISOLATION & KMEANS</span>
+      </div>
+      <div class="stat-val" style="font-size:1.15rem;color:#fff;">Isolation Forest</div>
+      <div class="stat-sub" id="anomalyModelStatusBadge">MODEL READY</div>
+    </div>
+  </div>
+
+  <div class="glass-card" style="margin-bottom:20px;">
+    <div class="chart-card-header">
+      <div>
+        <h4 class="chart-title">Active Models Evaluation Benchmarks</h4>
+        <span class="chart-desc">Empirical classification metrics derived from Scikit-Learn test partitions</span>
+      </div>
+      <div id="insufficientDataNotice" style="display:none;color:var(--amber);font-size:0.8rem;font-weight:600;">
+        Insufficient data for reliable model evaluation.
+      </div>
+    </div>
+
+    <div class="stats-grid-4" id="metricsCardsGrid">
+      <div class="stat-widget">
+        <div class="stat-header"><span class="stat-label">Accuracy Score</span><span class="mono" style="color:var(--text-muted);">y_true == y_pred</span></div>
+        <div class="stat-val mono" id="evalAccuracy" style="color:var(--emerald);">0.0000</div>
+        <div class="stat-sub">Overall classification fidelity</div>
+      </div>
+      <div class="stat-widget">
+        <div class="stat-header"><span class="stat-label">Precision (Weighted)</span><span class="mono" style="color:var(--text-muted);">TP / (TP + FP)</span></div>
+        <div class="stat-val mono" id="evalPrecision" style="color:var(--cyan-primary);">0.0000</div>
+        <div class="stat-sub">Positive predictive value</div>
+      </div>
+      <div class="stat-widget">
+        <div class="stat-header"><span class="stat-label">Recall (Weighted)</span><span class="mono" style="color:var(--text-muted);">TP / (TP + FN)</span></div>
+        <div class="stat-val mono" id="evalRecall" style="color:var(--indigo);">0.0000</div>
+        <div class="stat-sub">True positive sensitivity</div>
+      </div>
+      <div class="stat-widget">
+        <div class="stat-header"><span class="stat-label">F1 Harmonic Mean</span><span class="mono" style="color:var(--text-muted);">2*(P*R)/(P+R)</span></div>
+        <div class="stat-val mono" id="evalF1" style="color:var(--amber);">0.0000</div>
+        <div class="stat-sub">Balanced performance index</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-card);font-size:0.78rem;color:var(--text-muted);">
+      Notice: Metrics above reflect genuine Scikit-Learn evaluation matrices calculated on train-test splits. Metrics are never fabricated.
+    </div>
+  </div>
+
+  <div class="charts-grid-2">
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Engine Architecture Roster</h4>
+          <span class="chart-desc">Operational machine learning algorithms deployed in NEXORA</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:0.84rem;">
+        <div style="background:rgba(255,255,255,0.02);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border-card);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <strong style="color:var(--cyan-primary);">Random Forest Classifier</strong>
+            <span class="badge-tag" style="background:rgba(56,189,248,0.15);color:var(--cyan-primary);">Supervised</span>
+          </div>
+          <p style="color:var(--text-secondary);font-size:0.78rem;line-height:1.5;">Ensemble of 60 decision trees trained on labeled behavioral signatures. Extracts non-linear boundaries between DEEP WORK, NORMAL WORK, FRAGMENTED WORK, EXPLORATION, and IDLE.</p>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.02);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border-card);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <strong style="color:var(--indigo);">Isolation Forest</strong>
+            <span class="badge-tag" style="background:rgba(129,140,248,0.15);color:var(--indigo);">Anomaly Detection</span>
+          </div>
+          <p style="color:var(--text-secondary);font-size:0.78rem;line-height:1.5;">Unsupervised isolation tree algorithm isolating anomalous interaction density patterns by establishing statistical bounding envelopes across input frequencies.</p>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.02);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border-card);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <strong style="color:var(--emerald);">K-Means Clustering</strong>
+            <span class="badge-tag" style="background:rgba(16,185,129,0.15);color:var(--emerald);">Unsupervised Exploration</span>
+          </div>
+          <p style="color:var(--text-secondary);font-size:0.78rem;line-height:1.5;">Centroid-based spatial clustering evaluating cluster dispersion and spatial coherence across geometric cognitive feature projections.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="chart-card-header">
+        <div>
+          <h4 class="chart-title">Feature Representation Vector</h4>
+          <span class="chart-desc">Features ingested during training & inference</span>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Feature Identifier</th>
+              <th>Type</th>
+              <th>Formula / Derivation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">focus_index</td><td>Normalized [0-100]</td><td>(active_time / duration) * 100</td></tr>
+            <tr><td class="mono">continuity_index</td><td>Bounded [0-100]</td><td>100 - (idle_penalty + switch_penalty)</td></tr>
+            <tr><td class="mono">interaction_stability</td><td>Bounded [0-100]</td><td>100 - (event_imbalance + fragmentation)</td></tr>
+            <tr><td class="mono">fragmentation_index</td><td>Bounded [0-100]</td><td>switch_frequency*6.5 + idle_ratio_factor</td></tr>
+            <tr><td class="mono">activity_density</td><td>Continuous Rate</td><td>total_events / active_minutes</td></tr>
+            <tr><td class="mono">app_switches</td><td>Discrete Count</td><td>Window focus transfer events</td></tr>
+            <tr><td class="mono">mouse_distance</td><td>Continuous Pixel</td><td>Euclidean cursor displacement sum</td></tr>
+            <tr><td class="mono">keyboard_events</td><td>Discrete Count</td><td>Aggregate key press impulses</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/model.js') }}"></script>
+{% endblock %}
